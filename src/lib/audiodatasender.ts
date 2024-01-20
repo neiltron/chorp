@@ -3,13 +3,16 @@ import {
     checkInterval,
     wakeFrequency,
     sleepFrequency,
+    startFrequency,
+    asciiToFrequencyMap,
 } from './config';
 
-const toneLength: number = 4;
+const toneLength: number = .1;
 
 interface AudioDataSender {
     audioContext: AudioContext | null;
     oscillator: OscillatorNode | null;
+    modulator: OscillatorNode | null;
     textToSend: string;
     wakeFrequency: number;
     sleepFrequency: number;
@@ -19,6 +22,7 @@ class AudioDataSender {
     constructor() {
         this.audioContext = null;
         this.oscillator = null;
+        this.modulator = null;
         this.textToSend = '';
         this.wakeFrequency = wakeFrequency;
         this.sleepFrequency = sleepFrequency;
@@ -36,40 +40,82 @@ class AudioDataSender {
     }
 
     encodeAndPlayText() {
-        this.playTone(this.wakeFrequency);
+        // this.playTone(this.wakeFrequency);
 
         const textArray = this.textToSend.split('');
         let currentIndex = 0;
 
         const playNextTone = () => {
             if (currentIndex < textArray.length) {
-                const char = textArray[currentIndex];
+                const char = textArray[currentIndex].toLowerCase();
                 const frequency = this.charToFrequency(char);
 
                 if (frequency) {
-                    this.playTone(frequency);
+                    this.playTone(frequency, currentIndex + 1);
                 }
 
                 currentIndex++;
-                setTimeout(playNextTone, checkInterval * toneLength);
+                playNextTone();
             } else {
-                this.playTone(this.sleepFrequency);
-                this.stopSending();
+                // this.playTone(this.sleepFrequency, currentIndex + 2, true);
+                // this.stopSending();
             }
         };
 
         playNextTone();
     }
 
-    playTone(frequency: number) {
+    playTone(frequency: number, index: number = 0, stopAfterSending: boolean = false) {
         if (!this.audioContext) return;
+
+        const start = (this.audioContext.currentTime) + index * toneLength;
 
         this.oscillator = this.audioContext.createOscillator();
         this.oscillator.type = 'sine';
-        this.oscillator.frequency.setValueAtTime(frequency, this.audioContext.currentTime);
-        this.oscillator.connect(this.audioContext.destination);
-        this.oscillator.start();
-        this.oscillator.stop(this.audioContext.currentTime + (checkInterval / 1000) * toneLength);
+        this.oscillator.frequency.value = frequency;
+        // this.oscillator.frequency.linearRampToValueAtTime(frequency, start + toneLength / 5)
+
+        this.modulator = this.audioContext.createOscillator();
+        this.modulator.type = 'sine';
+        this.modulator.frequency.value = .05;
+
+        const gainNode = this.audioContext.createGain();
+        const modulatorGain = this.audioContext.createGain();
+        modulatorGain.gain.value = 500;
+
+        const filter = this.audioContext.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.value = frequency;
+        filter.Q.value = Math.sqrt(10); // Q value is needed for specific rolloffs
+
+
+        const attackTime = 0;
+        const decayTime = toneLength / 4;
+        const sustainLevel = toneLength / 3;
+        const releaseTime = 100;
+
+        this.oscillator.connect(filter);
+        filter.connect(gainNode);
+        gainNode.connect(this.audioContext.destination);
+
+        this.modulator.connect(modulatorGain);
+        modulatorGain.connect(this.oscillator.detune);
+
+        gainNode.gain.cancelScheduledValues(start);
+        gainNode.gain.setValueAtTime(0, start);
+        gainNode.gain.linearRampToValueAtTime(.1, start + attackTime); // Attack
+        // gainNode.gain.linearRampToValueAtTime(sustainLevel, start + attackTime + decayTime); // Decay
+        gainNode.gain.linearRampToValueAtTime(0, start + attackTime + releaseTime);
+
+
+        const end = start + toneLength;
+
+        console.log(index, frequency, start, end);
+        this.oscillator.start(start);
+        this.oscillator.stop(end);
+
+        this.modulator.start(start);
+        this.modulator.stop(end);
     }
 
     stopSending() {
@@ -84,11 +130,28 @@ class AudioDataSender {
     }
 
     charToFrequency(char: string) {
-        const charCode = char.charCodeAt(0);
-        const frequency = 440 + (charCode - 32) * bucketSize;
+        // const charCode = char.charCodeAt(0);
+        // const frequency = startFrequency + (charCode - 32) * bucketSize;
+
+        // console.log(char, charCode, frequency);
+
+        const frequency = asciiToFrequencyMap[char];
 
         return frequency;
     }
+
+    frequencyToChar(frequency: number) {
+        const charCode = Math.round((frequency - startFrequency) / bucketSize);
+
+        console.log('charcode', charCode, frequency);
+
+        if (charCode >= 32 && charCode <= 126) {
+            return String.fromCharCode(charCode);
+        }
+
+        return null;
+    }
+
 }
 
 export default AudioDataSender;
