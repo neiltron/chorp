@@ -1,11 +1,16 @@
 <template>
     <div>
-        <textarea v-model="textToSend" placeholder="Enter text to send"></textarea>
-        <button @click="startSending">Send</button>
+        <textarea
+            class="bg-stone-700 text-stone-100"
+            v-model="textToSend"
+            placeholder="Enter text to send"
+        ></textarea>
+        <Button @click="startSending" class="bg-stone-900 text-stone-100">Send</Button>
     </div>
 </template>
 
 <script lang="ts">
+import { Button } from '@/components/ui/button'
 import AudioDataSender from "../lib/audiodatasender";
 
 export default {
@@ -16,6 +21,7 @@ export default {
     },
     methods: {
         startSending() {
+            console.log(this.textToSend)
             const sender = new AudioDataSender();
             sender.startSending(this.textToSend);
         },
@@ -38,14 +44,11 @@ textarea {
     margin-bottom: 0;
     display: block;
     border-radius: 6px;
-    background-color: #333;
-    color: #fff;
     border: none;
-    font-size: 2rem;
 }
 button {
     margin-top: 8px;
     padding: 8px 2px;
-    border-radius: 2px;
+    border-radius: 6px;
 }
 </style>

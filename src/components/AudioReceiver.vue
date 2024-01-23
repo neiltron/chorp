@@ -1,10 +1,15 @@
 <template>
   <div>
-    <div class="text-display">
-      <button @click="toggleReceiving">
-          {{ isReceiving ? 'Receiving' : 'Receive' }}
-      </button>
-      <span class="text-display-inner">
+    <div class="text-display bg-stone-700">
+      <div class="flex items-center space-x-2 text-white">
+        <Switch
+          id="receiving-switch"
+          :checked="isReceiving"
+          @update:checked="toggleReceiving"
+        />
+        <Label for="receiving-switch" class="text-white">{{ isReceiving ? 'Receiving' : 'Receive' }}</Label>
+      </div>
+      <span ref="textareaEl" class="text-display-inner">
         {{ fullText }}
       </span>
     </div>
@@ -13,6 +18,8 @@
 
 <script setup lang="ts">
 import { nextTick, onBeforeUnmount, ref, watch } from 'vue';
+import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
 import AudioDataReceiver from '../lib/audiodatareceiver';
 
 const audioDataReceiver = new AudioDataReceiver();
@@ -29,15 +36,15 @@ watch(receivedText, async () => {
 });
 
 const toggleReceiving = () => {
-    if (isReceiving.value) {
-        stopReceiving()
-    } else {
-        startReceiving();
-    }
+  if (isReceiving.value) {
+    stopReceiving()
+  } else {
+    startReceiving();
+  }
 }
 
 const stopReceiving = () => {
-    audioDataReceiver.stopAudioContext();
+  audioDataReceiver.stopAudioContext();
 }
 
 const startReceiving = () => {
@@ -62,7 +69,7 @@ onBeforeUnmount(() => {
 
 <style scoped>
 h2 {
-    padding: 0;
+  padding: 0;
 }
 button {
   display: block;
@@ -70,27 +77,35 @@ button {
   border-radius: 6px;
 }
 textarea {
-    width: 30rem;
-    min-height: 10rem;
-    font-size: 1rem;
-    padding: .4rem;
-    margin-top: .5rem;
+  width: 30rem;
+  min-height: 10rem;
+  font-size: 1rem;
+  padding: .4rem;
+  margin-top: .5rem;
 }
 
 .text-display {
-  height: 36rem;
-  font-size: 2rem;
-  font-weight: 800;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  text-align: center;
-  padding: 20px;
-  max-width: 100%;
-  background-color: #222;
-  border-radius: 6px;
-  min-height: 20rem;
+  color: #eee;
   display: flex;
+  gap: 1rem;
+  max-width: 100%;
+  height: 5rem;
+  min-height: 10rem;
+  padding: 20px;
+  font-size: 1.4rem;
+  line-height: 1;
+  font-weight: 500;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  border-radius: 6px;
   flex-direction: column;
   text-transform: uppercase;
   word-break: break-all;
+}
+
+.text-display-inner {
+  overflow: auto;
+  padding-top: 10px;
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 1) 20%);
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 1) 20%);
 }
 </style>
