@@ -1,24 +1,20 @@
 import {
-    bucketSize,
-    checkInterval,
     wakeFrequency,
     sleepFrequency,
-    startFrequency,
     asciiToFrequencyMap,
+    toneLength,
+    findClosestFrequency,
+    frequencyToAsciiMap,
 } from './config';
 
-const toneLength: number = .1;
-
-interface AudioDataSender {
+class AudioDataSender {
     audioContext: AudioContext | null;
     oscillator: OscillatorNode | null;
     modulator: OscillatorNode | null;
     textToSend: string;
     wakeFrequency: number;
     sleepFrequency: number;
-}
 
-class AudioDataSender {
     constructor() {
         this.audioContext = null;
         this.oscillator = null;
@@ -110,7 +106,7 @@ class AudioDataSender {
 
         const end = start + toneLength;
 
-        console.log(index, frequency, start, end);
+        console.log(index, `"${this.frequencyToChar(frequency)}"`, frequency, start, end);
         this.oscillator.start(start);
         this.oscillator.stop(end);
 
@@ -141,13 +137,27 @@ class AudioDataSender {
     }
 
     frequencyToChar(frequency: number) {
-        const charCode = Math.round((frequency - startFrequency) / bucketSize);
+        // const charCode = Math.ceil((frequency - startFrequency) / bucketSize) + 32;
 
-        console.log('charcode', charCode, frequency);
+        const closestFrequency = findClosestFrequency(frequency);
 
-        if (charCode >= 32 && charCode <= 126) {
-            return String.fromCharCode(charCode);
+        if (closestFrequency === 415.30) {
+            return;
         }
+
+        const char = frequencyToAsciiMap[closestFrequency]
+
+        console.log(closestFrequency, char);
+
+        return char;
+
+        // if (charCode > 0) {
+        //     console.log('charcode', charCode, frequency);
+        // }
+
+        // if (charCode >= 32 && charCode <= 126) {
+        //     return String.fromCharCode(charCode);
+        // }
 
         return null;
     }

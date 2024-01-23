@@ -1,19 +1,13 @@
 import {
-    bucketSize,
     checkInterval,
     wakeFrequency,
     sleepFrequency,
-    startFrequency,
+    toneLength,
     frequencyToAsciiMap,
     findClosestFrequency,
 } from './config';
 
 const fftSize: number = 2048;
-const toneLength: number = .1;
-
-interface AudioDataReceiver {
-
-}
 
 class AudioDataReceiver {
     wakeFrequency: number;
@@ -91,26 +85,23 @@ class AudioDataReceiver {
                 this.analyser?.getByteFrequencyData(this.dataArray);
                 const frequency = this.findFrequency();
 
-                // console.log(frequency, this.wakeFrequency);
+                console.log(frequency, this.wakeFrequency);
 
-                if (frequency && Math.abs(this.wakeFrequency - frequency) <= 5) {
-                    console.log('wake');
-                    this.isSynchronized = true;
-                } else if (frequency && Math.abs(this.sleepFrequency - frequency) <= 5) {
-                    console.log('sleep');
-                    this.isReceiving = false;
-                    this.isSynchronized = false;
-                    // this.onReceiveStatusCallback!(this.isReceiving);
-                    this.onReceivedCallback!(this.receivedText);
-                }
+                // if (frequency && Math.abs(this.wakeFrequency - frequency) <= 5) {
+                //     console.log('wake');
+                //     this.isSynchronized = true;
+                // } else if (frequency && Math.abs(this.sleepFrequency - frequency) <= 5) {
+                //     console.log('sleep');
+                //     this.isReceiving = false;
+                //     this.isSynchronized = false;
+                //     // this.onReceiveStatusCallback!(this.isReceiving);
+                //     this.onReceivedCallback!(this.receivedText);
+                // }
 
                 if (frequency != null) {
                     const char = this.frequencyToChar(frequency);
 
-                    if (char != null) {
-                        // console.log(char, frequency, this.receivedText);
-                    }
-
+                    console.log("char", `"${char}"`, frequency)
                     if (char != null) {
                         if (signal.lastCharacter === char) {
                             signal.repeatCharacters += 1;
@@ -121,7 +112,7 @@ class AudioDataReceiver {
 
                         signal.lastCharacter = char;
 
-                        console.log('count', signal.repeatCharacters, char)
+                        // console.log('count', signal.repeatCharacters, char)
 
                         if (signal.repeatCharacters === 3) {
                             this.receivedText = char;
@@ -166,29 +157,10 @@ class AudioDataReceiver {
     }
 
     frequencyToChar(frequency: number) {
-        // const charCode = Math.ceil((frequency - startFrequency) / bucketSize) + 32;
-
         const closestFrequency = findClosestFrequency(frequency);
-
-        if (closestFrequency === 415.30) {
-            return;
-        }
-
         const char = frequencyToAsciiMap[closestFrequency]
 
-        console.log(closestFrequency, char);
-
         return char;
-
-        // if (charCode > 0) {
-        //     console.log('charcode', charCode, frequency);
-        // }
-
-        // if (charCode >= 32 && charCode <= 126) {
-        //     return String.fromCharCode(charCode);
-        // }
-
-        return null;
     }
 
     stopReceiving() {
