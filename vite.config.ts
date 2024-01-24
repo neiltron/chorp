@@ -2,6 +2,7 @@ import { fileURLToPath, URL } from 'node:url'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
+import mkcert from 'vite-plugin-mkcert'
 import tailwind from "tailwindcss"
 import autoprefixer from "autoprefixer"
 
@@ -10,6 +11,7 @@ export default defineConfig({
   plugins: [
     vue(),
     vueJsx(),
+    mkcert(),
   ],
   css: {
     postcss: {
