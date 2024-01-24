@@ -3,7 +3,7 @@ export const bucketSize: number = 48;
 export const checkInterval: number = 1;
 export const wakeFrequency: number = 1050;
 export const sleepFrequency: number = 440
-export const toneLength: number = .1;
+export const toneLength: number = .125;
 
 const notes = [
     523.25, 554.37, 587.33, 622.25, 659.26, 698.46, 739.99, 783.99,
@@ -17,7 +17,7 @@ export const asciiToFrequencyMap: { [key: string]: number } = {}
 export const frequencyToAsciiMap: { [key: number]: string } = {}
 
 const asciiCodes = [
-    0, 10, 46, 63, 32,
+    0, 46, 63, 10, 32,
     ...Array.from({length: 26}, (_, i) => i + 97), // a-z
     ...Array.from({length: 10}, (_, i) => i + 48), // 0-9
 ];
