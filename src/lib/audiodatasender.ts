@@ -99,7 +99,7 @@ class AudioDataSender {
 
         gainNode.gain.cancelScheduledValues(start);
         gainNode.gain.setValueAtTime(0, start);
-        gainNode.gain.linearRampToValueAtTime(.1, start + attackTime); // Attack
+        gainNode.gain.linearRampToValueAtTime(.5, start + attackTime); // Attack
         // gainNode.gain.linearRampToValueAtTime(sustainLevel, start + attackTime + decayTime); // Decay
         gainNode.gain.linearRampToValueAtTime(0, start + attackTime + releaseTime);
 
