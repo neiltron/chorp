@@ -85,19 +85,6 @@ class AudioDataReceiver {
                 this.analyser?.getByteFrequencyData(this.dataArray);
                 const frequency = this.findFrequency();
 
-                console.log(frequency, this.wakeFrequency);
-
-                // if (frequency && Math.abs(this.wakeFrequency - frequency) <= 5) {
-                //     console.log('wake');
-                //     this.isSynchronized = true;
-                // } else if (frequency && Math.abs(this.sleepFrequency - frequency) <= 5) {
-                //     console.log('sleep');
-                //     this.isReceiving = false;
-                //     this.isSynchronized = false;
-                //     // this.onReceiveStatusCallback!(this.isReceiving);
-                //     this.onReceivedCallback!(this.receivedText);
-                // }
-
                 if (frequency != null) {
                     const char = this.frequencyToChar(frequency);
 
@@ -114,7 +101,7 @@ class AudioDataReceiver {
 
                         // console.log('count', signal.repeatCharacters, char)
 
-                        if (signal.repeatCharacters === 3) {
+                        if (signal.repeatCharacters === 1) {
                             this.receivedText = char;
                             this.onReceivedCallback!(this.receivedText);
 
