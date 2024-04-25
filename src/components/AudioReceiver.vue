@@ -26,11 +26,12 @@ const audioDataReceiver = new AudioDataReceiver();
 const receivedText = ref('');
 const fullText = ref('');
 const isReceiving = ref(audioDataReceiver.isReceiving);
-const textareaEl = ref(null);
+const textareaEl = ref<HTMLTextAreaElement | null>(null);
 
 watch(receivedText, async () => {
   await nextTick();
   if (textareaEl.value != null) {
+
     textareaEl.value.scrollTop = textareaEl.value?.scrollHeight;
   }
 });
