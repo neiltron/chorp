@@ -1,11 +1,11 @@
 export const startFrequency: number = 360;
-export const bucketSize: number = 48;
 export const checkInterval: number = 1;
 export const wakeFrequency: number = 1050;
 export const sleepFrequency: number = 440
-export const toneLength: number = .125;
+export const toneLength: number = .1;
 
 const notes = [
+    261.63, 277.18, 293.66, 311.13, 329.63, 349.23, 369.99, 392, 415.3, 440, 466.16, 493.88,
     523.25, 554.37, 587.33, 622.25, 659.26, 698.46, 739.99, 783.99,
     830.61, 880.00, 932.33, 987.77, 1046.50, 1108.73, 1174.66, 1244.51, 1318.51, 1396.91,
     1479.98, 1567.98, 1661.22, 1760.00, 1864.66, 1975.53, 2093.00, 2217.46, 2349.32, 2489.02,
