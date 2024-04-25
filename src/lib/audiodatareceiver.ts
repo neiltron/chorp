@@ -46,7 +46,14 @@ class AudioDataReceiver {
 
         try {
             // get audio stream and create context
-            const audioStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+            const audioStream = await navigator.mediaDevices.getUserMedia({
+                audio: {
+                    echoCancellation: false,
+                    noiseSuppression: false,
+                    autoGainControl: false,
+                },
+                video: false
+            });
             this.audioContext = new AudioContext();
 
             // create stream source + analyser and connect them
@@ -108,7 +115,7 @@ class AudioDataReceiver {
                             clearTimeout(signal.resetTimeout!);
                             signal.resetTimeout = setTimeout(() => {
                                 signal.repeatCharacters = 0;
-                            }, toneLength * 2 * 1000);
+                            }, toneLength * 2 * 750);
                         }
                     }
                 }
