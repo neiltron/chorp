@@ -1,6 +1,4 @@
 import {
-    wakeFrequency,
-    sleepFrequency,
     asciiToFrequencyMap,
     toneLength,
     findClosestFrequency,
@@ -12,16 +10,12 @@ class AudioDataSender {
     oscillator: OscillatorNode | null;
     modulator: OscillatorNode | null;
     textToSend: string;
-    wakeFrequency: number;
-    sleepFrequency: number;
 
     constructor() {
         this.audioContext = null;
         this.oscillator = null;
         this.modulator = null;
         this.textToSend = '';
-        this.wakeFrequency = wakeFrequency;
-        this.sleepFrequency = sleepFrequency;
     }
 
     async startSending(text: string) {
@@ -36,8 +30,6 @@ class AudioDataSender {
     }
 
     encodeAndPlayText() {
-        // this.playTone(this.wakeFrequency);
-
         const textArray = this.textToSend.split('');
         let currentIndex = 0;
 
@@ -53,7 +45,6 @@ class AudioDataSender {
                 currentIndex++;
                 playNextTone();
             } else {
-                // this.playTone(this.sleepFrequency, currentIndex + 2, true);
                 // this.stopSending();
             }
         };
@@ -126,19 +117,12 @@ class AudioDataSender {
     }
 
     charToFrequency(char: string) {
-        // const charCode = char.charCodeAt(0);
-        // const frequency = startFrequency + (charCode - 32) * bucketSize;
-
-        // console.log(char, charCode, frequency);
-
         const frequency = asciiToFrequencyMap[char];
 
         return frequency;
     }
 
     frequencyToChar(frequency: number) {
-        // const charCode = Math.ceil((frequency - startFrequency) / bucketSize) + 32;
-
         const closestFrequency = findClosestFrequency(frequency);
 
         if (closestFrequency === 415.30) {
@@ -147,19 +131,9 @@ class AudioDataSender {
 
         const char = frequencyToAsciiMap[closestFrequency]
 
-        console.log(closestFrequency, char);
+        // console.log(closestFrequency, char);
 
         return char;
-
-        // if (charCode > 0) {
-        //     console.log('charcode', charCode, frequency);
-        // }
-
-        // if (charCode >= 32 && charCode <= 126) {
-        //     return String.fromCharCode(charCode);
-        // }
-
-        return null;
     }
 
 }

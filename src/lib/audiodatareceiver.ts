@@ -1,7 +1,5 @@
 import {
     checkInterval,
-    wakeFrequency,
-    sleepFrequency,
     toneLength,
     frequencyToAsciiMap,
     findClosestFrequency,
@@ -10,10 +8,7 @@ import {
 const fftSize: number = 2048;
 
 class AudioDataReceiver {
-    wakeFrequency: number;
-    sleepFrequency: number;
     isReceiving: boolean;
-    isSynchronized: boolean;
     audioContext: AudioContext | null;
     analyser: AnalyserNode | null;
     dataArray: Uint8Array;
@@ -25,10 +20,7 @@ class AudioDataReceiver {
     onReceiveStatusCallback: Function | null;
 
     constructor() {
-        this.wakeFrequency = wakeFrequency;
-        this.sleepFrequency = sleepFrequency;
         this.isReceiving = false;
-        this.isSynchronized = false;
         this.audioContext = null;
         this.analyser = null;
         this.dataArray = new Uint8Array();
@@ -171,7 +163,6 @@ class AudioDataReceiver {
         }
 
         this.isReceiving = false;
-        this.isSynchronized = false;
 
         this.onReceiveStatusCallback!(this.isReceiving);
     }

@@ -1,7 +1,4 @@
-export const startFrequency: number = 360;
 export const checkInterval: number = 1;
-export const wakeFrequency: number = 1050;
-export const sleepFrequency: number = 440
 export const toneLength: number = .1;
 
 const notes = [
