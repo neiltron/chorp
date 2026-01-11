@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import AudioReceiver from './components/AudioReceiver.vue'
 import AudioSender from './components/AudioSender.vue'
+import SpectralDebug from './components/SpectralDebug.vue'
 </script>
 
 <template>
@@ -16,12 +17,15 @@ import AudioSender from './components/AudioSender.vue'
   </header>
   <main>
     <Tabs default-value="sender" class="max-w-[920px]">
-      <TabsList class="grid w-full grid-cols-2">
+      <TabsList class="grid w-full grid-cols-3">
         <TabsTrigger value="sender">
           Sender
         </TabsTrigger>
         <TabsTrigger value="receiver">
           Receiver
+        </TabsTrigger>
+        <TabsTrigger value="debug">
+          Debug
         </TabsTrigger>
       </TabsList>
       <TabsContent value="receiver">
@@ -47,6 +51,19 @@ import AudioSender from './components/AudioSender.vue'
           </CardHeader>
           <CardContent class="space-y-2">
             <AudioSender />
+          </CardContent>
+        </Card>
+      </TabsContent>
+      <TabsContent value="debug">
+        <Card class="space-y-2 flex flex-col">
+          <CardHeader class="space-y-2 flex flex-col">
+            <CardTitle>Spectral Debug</CardTitle>
+            <CardDescription>
+              Real-time frequency analysis. Use this to visualize audio input and debug frequency detection.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <SpectralDebug />
           </CardContent>
         </Card>
       </TabsContent>
